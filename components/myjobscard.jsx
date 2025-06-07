@@ -1,6 +1,7 @@
 import React from "react";
 import { Pencil, MapPin, Eye, Calendar, Users, Star, Zap, Target, TrendingUp } from "lucide-react";
 import DeleteJobButton from "../components/DeleteJobButton";
+import Link from "next/link";
 
 const MyJobsCard = ({ job }) => {
   // Handle case where job is undefined or null
@@ -21,7 +22,7 @@ const MyJobsCard = ({ job }) => {
 
   const getSeniorityColor = (level) => {
     // Use opacity variations of the main color for hierarchy
-    switch(level) {
+    switch (level) {
       case 'Junior': return 'bg-[#5badec]/20 text-[#5badec] border-[#5badec]/30';
       case 'Mid-Level': return 'bg-[#5badec]/30 text-[#5badec] border-[#5badec]/40';
       case 'Senior': return 'bg-[#5badec]/40 text-[#5badec] border-[#5badec]/50';
@@ -35,7 +36,7 @@ const MyJobsCard = ({ job }) => {
 
   return (
     <div className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md overflow-hidden w-full max-w-6xl transition-all duration-200 hover:-translate-y-1">
-      
+
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex justify-between items-start mb-4">
@@ -60,7 +61,7 @@ const MyJobsCard = ({ job }) => {
                 </div>
               </div>
             </div>
-            
+
             {/* Status badges */}
             <div className="flex flex-wrap gap-2 mb-4">
               <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getSeniorityColor(job.seniorityLevel)}`}>
@@ -71,7 +72,7 @@ const MyJobsCard = ({ job }) => {
               </span>
             </div>
           </div>
-          
+
           {/* Views counter */}
           <div className="flex items-center px-3 py-2 bg-gray-50 rounded-lg border border-gray-200">
             <Eye className="w-4 h-4 text-gray-600 mr-2" />
@@ -86,7 +87,7 @@ const MyJobsCard = ({ job }) => {
       {/* Main content */}
       <div className="px-6 pb-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
+
           {/* Skills Section */}
           <div className="space-y-3">
             <h3 className="text-base font-semibold text-gray-900 flex items-center">
@@ -143,8 +144,8 @@ const MyJobsCard = ({ job }) => {
             </h3>
             <div className="flex flex-wrap gap-1.5">
               {(job.relatedpaths || []).map((path, index) => (
-                <span 
-                  key={index} 
+                <span
+                  key={index}
                   className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded text-sm font-medium border border-gray-200"
                 >
                   {path}
@@ -162,16 +163,19 @@ const MyJobsCard = ({ job }) => {
       <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
         <div className="flex justify-end items-center">
           <div className="flex space-x-3">
-            <button className="flex items-center px-4 py-2 text-sm font-medium text-white bg-[#5badec] rounded-lg hover:bg-[#4a9ad4] transition-colors duration-200">
+            <Link
+              href={`/jobs/edit?job=${btoa(job.$id || job.id)}`}
+              className="flex items-center px-4 py-2 text-sm font-medium text-white bg-[#5badec] rounded-lg hover:bg-[#4a9ad4] transition-colors duration-200"
+            >
               <Pencil className="mr-2 h-4 w-4" />
               Edit Job
-            </button>
+            </Link>
             <DeleteJobButton jobId={job.$id || job.id} />
           </div>
         </div>
       </div>
     </div>
-  ); 
+  );
 };
 
 export default MyJobsCard;
