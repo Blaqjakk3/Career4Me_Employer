@@ -20,6 +20,17 @@ async function createJob(previousState, formData){
 
         // Get industry value - provide a default if not present
         const industry = formData.get('industry') || "Technology";
+        
+        // Handle expiry date - convert to ISO string if provided
+        let expiryDate = null;
+        const expiryDateInput = formData.get('expiryDate');
+        if (expiryDateInput) {
+            const expiry = new Date(expiryDateInput);
+            // Validate that the expiry date is in the future
+            if (expiry > new Date()) {
+                expiryDate = expiry.toISOString();
+            }
+        }
 
         // Create job
        const newJob = await databases.createDocument(
@@ -41,7 +52,8 @@ async function createJob(previousState, formData){
             seniorityLevel: formData.get('seniorityLevel'), // String
             industry: industry, // String - ensure it's not empty
             responsibilities: formData.getAll('responsibilities'), // Array of strings
-            dateofUpload: new Date().toISOString() // Automatically added date
+            dateofUpload: new Date().toISOString(), // Automatically added date
+            expiryDate: expiryDate // Optional expiry date
         }
        ); 
        revalidatePath('/', 'layout');

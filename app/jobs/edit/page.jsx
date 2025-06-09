@@ -6,18 +6,33 @@ import updateJob from "../../actions/updateJob";
 import getJobById from "../../actions/getJobById";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { PlusIcon, ArrowLeft, Briefcase, Sparkles, Target, Zap, Edit3 } from 'lucide-react';
+import { PlusIcon, ArrowLeft, Briefcase, Sparkles, Target, Zap, Edit3, Calendar } from 'lucide-react';
 
 const jobTypes = ["Full Time", "Part Time", "Contract", "Internship"];
 const industries = ["Technology", "Business", "Healthcare", "Finance", "Creative Arts",
     "Engineering", "Science", "Education", "Environment"];
 const workEnvironments = ["In Person", "Remote"];
 const seniorityLevels = ["Entry-Level", "Mid-Level", "Senior-Level"];
-const careerPaths = ["Accountant", "Actuary", "Aerospace Engineer", "AI Engineer", "AI Product Manager", "Anesthesiologist", "Animator", "Art Director", "Astronomer", "Auditor", "Automotive Engineer", "Backend Developer", "Biologist", "Biomedical Engineer", "Biotechnologist", "Blockchain Developer", "Business Analyst", "Chemical Engineer", "Chemist", "Chiropractor", "Civil Engineer", "Climate Scientist", 
-    "Cloud Architect", "College Professor", "Copywriter", "Creative Director", "Credit Analyst", "Curriculum Developer", "Cybersecurity Analyst", "Data Analyst", "Data Engineer", "Data Scientist", "Database Administrator", "Dentist", "DevOps Engineer", "Dietitian", "Education Policy Analyst", "Educational Consultant", "Electrical Engineer", "Entrepreneur", "Environmental Engineer", "Environmental Scientist", "ESL Teacher", "Ethical Hacker", "Event Planner", "Fashion Designer", "Film Director", "Financial Analyst", "Financial Planner", "Forensic Scientist", "Frontend Developer", "Full-Stack Developer", "Game Developer", "Geologist", "Geotechnical Engineer", "Graphic Designer", "Healthcare Administrator", "Human Resources Manager", "Industrial Engineer", "Instructional Designer", "Insurance Underwriter", "Interior Designer", "Investment Banker", "IT Manager", "Librarian", "Logistics Manager", "Machine Learning Engineer", "Management Consultant", "Marine Engineer", "Materials Engineer", "Mechanical Engineer", "Medical Laboratory Scientist", "Medical Researcher", "Meteorologist", "Microbiologist", "Mobile App Developer", "Music Producer", "Network Administrator", "Nuclear Engineer", "Nurse Practitioner", "Occupational Therapist", "Operations Manager", "Optometrist", "Pediatrician", "Petroleum Engineer", "Pharmacist", "Photographer", "Physical Therapist", "Physicist", "Product Manager", "Project Manager", "Prompt Engineer", "Psychologist", "Public Relations Manager", "QA Engineer", "Radiologist", "Risk Manager", 
-    "Robotics Engineer", "Sales Manager", "School Counselor", "School Principal", "Software Engineer", "Special Education Teacher", "Structural Engineer", "Supply Chain Manager", "Surgeon", "Sustainability Specialist", "Systems Analyst", "Systems Engineer", "Tax Consultant", "Teacher", "Technical Writer", "UX Designer", "Video Editor", "VR/AR Developer", "Wealth Manager"];
+const careerPaths = ["Accountant", "Actuary"];
+
+// FIXED: Helper function to format date for HTML input
+const formatDateForInput = (dateString) => {
+    if (!dateString) return "";
+    try {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+    } catch (error) {
+        console.log('Error formatting date:', error);
+        return "";
+    }
+};
 
 const EditJob = () => {
+    // More robust date handling with timezone consideration
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayFormatted = today.toISOString().split('T')[0];
+    
     const [state, formAction] = useActionState(updateJob, {});
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -26,6 +41,7 @@ const EditJob = () => {
     const encodedJobId = searchParams.get('job');
     const jobId = encodedJobId ? atob(encodedJobId) : null; // Base64 decode
 
+    // FIXED: Initialize all form fields with default string values to prevent controlled/uncontrolled issues
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -40,6 +56,7 @@ const EditJob = () => {
         suggestedCertifications: [],
         industry: industries[0],
         responsibilities: [],
+        expiryDate: "", // FIXED: Initialize as empty string instead of undefined
     });
 
     const [selectedPath, setSelectedPath] = useState('');
@@ -74,6 +91,7 @@ const EditJob = () => {
                     suggestedCertifications: job.suggestedCertifications || [],
                     industry: job.industry || industries[0],
                     responsibilities: job.responsibilities || [],
+                    expiryDate: formatDateForInput(job.expiryDate), // FIXED: Properly format date for input
                 });
                 setLoading(false);
             } catch (error) {
@@ -283,6 +301,25 @@ const EditJob = () => {
                                                 required
                                             />
                                         </div>
+                                    </div>
+
+                                    {/* FIXED: Expiry Date Field - moved inside the grid section */}
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium text-gray-700 flex items-center">
+                                            <Calendar className="w-4 h-4 mr-2 text-gray-500" />
+                                            Job Expiry Date (Optional)
+                                        </label>
+                                        <input 
+                                            type="date" 
+                                            name="expiryDate" 
+                                            value={formData.expiryDate} // This is now always a string
+                                            onChange={handleChange}
+                                            min={todayFormatted}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+                                        />
+                                        <p className="text-sm text-gray-500">
+                                            If set, this job will automatically be removed after the specified date.
+                                        </p>
                                     </div>
                                 </div>
                             </div>

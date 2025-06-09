@@ -5,7 +5,7 @@ import JobsLayout from "../_layout";
 import createJob from "../../actions/createJob";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { PlusIcon, ArrowLeft, Briefcase, Sparkles, Target, Zap } from 'lucide-react';
+import { PlusIcon, ArrowLeft, Briefcase, Sparkles, Target, Zap, Calendar } from 'lucide-react';
 
 const jobTypes = ["Full Time", "Part Time", "Contract", "Internship"];
 const industries = ["Technology", "Business", "Healthcare", "Finance", "Creative Arts",
@@ -32,6 +32,7 @@ const PostJobs = () => {
         suggestedCertifications: [],
         industry: industries[0],
         responsibilities: [],
+        expiryDate: "",
     });
 
     const [selectedPath, setSelectedPath] = useState('');
@@ -39,6 +40,9 @@ const PostJobs = () => {
     const [skillInput, setSkillInput] = useState('');
     const [degreesInput, setDegreesInput] = useState('');
     const [certificationsInput, setCertificationsInput] = useState('');
+
+    // Get today's date in YYYY-MM-DD format for min date
+    const today = new Date().toISOString().split('T')[0];
 
     useEffect(() => { 
         if (state.error) toast.error(state.error);
@@ -224,6 +228,24 @@ const PostJobs = () => {
                                         </div>
                                     </div>
                                 </div>
+                                 {/* Expiry Date Field */}
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium text-gray-700 flex items-center">
+                                            <Calendar className="w-4 h-4 mr-2 text-gray-500" />
+                                            Job Expiry Date (Optional)
+                                        </label>
+                                        <input 
+                                            type="date" 
+                                            name="expiryDate" 
+                                            value={formData.expiryDate} 
+                                            onChange={handleChange}
+                                            min={today}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-al" 
+                                        />
+                                        <p className="text-sm text-gray-500">
+                                            If set, this job will automatically be removed after the specified date.
+                                        </p>
+                                    </div>
                             </div>
 
                             {/* Job Specifications Section */}
@@ -368,14 +390,50 @@ const PostJobs = () => {
                                 </h3>
                                 
                                 <div className="grid lg:grid-cols-2 gap-8">
+                                    {/* Responsibilities - Larger Text Area */}
+                                    <div className="lg:col-span-2 space-y-4">
+                                        <label className="block text-sm font-medium text-gray-700">Responsibilities</label>
+                                        <div className="flex gap-3">
+                                            <textarea 
+                                                placeholder="e.g. Lead development of new features, mentor junior developers, collaborate with cross-functional teams..." 
+                                                value={responsibilitiesInput}
+                                                onChange={(e) => setResponsibilitiesInput(e.target.value)}
+                                                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all h-24 resize-none" 
+                                            />
+                                            <button 
+                                                type="button" 
+                                                onClick={() => handleAddItem('responsibilities', responsibilitiesInput, setResponsibilitiesInput)} 
+                                                disabled={!responsibilitiesInput}
+                                                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95 self-start"
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {formData.responsibilities.map((item, index) => (
+                                                <span 
+                                                    key={index} 
+                                                    className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm border border-gray-200"
+                                                >
+                                                    {item}
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handleRemoveItem('responsibilities', index)} 
+                                                        className="ml-2 text-red-500 hover:text-red-700 transition-colors"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            ))}
+                                        </div>
+                                        
+                                        {formData.responsibilities.map((item, index) => (
+                                            <input key={`hidden-responsibilities-${index}`} type="hidden" name="responsibilities" value={item} />
+                                        ))}
+                                    </div>
+
+                                    {/* Other Fields */}
                                     {[
-                                        { 
-                                            field: 'responsibilities', 
-                                            input: responsibilitiesInput, 
-                                            setInput: setResponsibilitiesInput, 
-                                            placeholder: 'e.g. Lead development of new features', 
-                                            label: 'Responsibilities'
-                                        },
                                         { 
                                             field: 'skills', 
                                             input: skillInput, 

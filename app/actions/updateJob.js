@@ -26,6 +26,23 @@ async function updateJob(previousState, formData) {
         // Get industry value - provide a default if not present
         const industry = formData.get('industry') || "Technology";
 
+        // FIXED: Handle expiry date properly - always process the field
+        const expiryDateValue = formData.get('expiryDate');
+        let expiryDate = null;
+        
+        // If expiry date is provided and not empty, convert to ISO string
+        if (expiryDateValue && expiryDateValue.trim() !== '') {
+            try {
+                expiryDate = new Date(expiryDateValue).toISOString();
+            } catch (dateError) {
+                console.log('Invalid date format:', expiryDateValue);
+                // Keep as null if date is invalid
+                expiryDate = null;
+            }
+        }
+        // If expiryDateValue is empty or null, expiryDate remains null
+        // This allows clearing the expiry date
+
         // Update job
         const updatedJob = await databases.updateDocument(
             process.env.NEXT_PUBLIC_APPWRITE_DATABASE,
@@ -45,7 +62,7 @@ async function updateJob(previousState, formData) {
                 seniorityLevel: formData.get('seniorityLevel'), // String
                 industry: industry, // String - ensure it's not empty
                 responsibilities: formData.getAll('responsibilities'), // Array of strings
-                // Note: We don't update dateofUpload, employer, numViews, or numClicks
+                expiryDate: expiryDate // FIXED: Always include this field, null clears it
             }
         );
 
