@@ -1,15 +1,28 @@
-import { useState } from "react";
+// Updated _layout.jsx - localStorage approach
+import { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar";
 
 export default function DashboardLayout({ children }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebar-collapsed');
+      return saved ? JSON.parse(saved) : false;
+    }
+    return false;
+  });
+
+  // Custom setter that persists to localStorage
+  const handleSetCollapsed = (newCollapsed) => {
+    setCollapsed(newCollapsed);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sidebar-collapsed', JSON.stringify(newCollapsed));
+    }
+  };
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar receives the collapsed state and toggle function */}
-      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-
-      {/* Content shifts dynamically based on sidebar state */}
+      <Sidebar collapsed={collapsed} setCollapsed={handleSetCollapsed} />
       <main
         className={`
           flex-1 overflow-y-auto transition-all duration-300 ease-in-out
