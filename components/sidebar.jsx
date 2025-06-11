@@ -165,39 +165,70 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             ))}
           </nav>
 
-          {/* User Profile Badge */}
-          {!collapsed && profile && (
+          {/* User Profile Badge - Always show if profile exists */}
+          {profile && (
             <div className="px-3 pb-4">
-              <div className="flex items-center px-4 py-3 bg-white/60 rounded-xl border border-gray-200/50 shadow-sm hover:bg-white/80 transition-all duration-200">
-                <div className="w-10 h-10 rounded-xl overflow-hidden mr-3 ring-2 ring-blue-100">
-                  {profile.avatar ? (
-                    <img 
-                      src={profile.avatar} 
-                      alt={profile.companyName || 'User Avatar'}
-                      className="object-cover w-full h-full"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
-                  <div 
-                    className={`w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ${profile.avatar ? 'hidden' : 'flex'}`}
-                  >
-                    <span className="text-white font-semibold text-lg">
-                      {profile.name ? profile.name.charAt(0).toUpperCase() : 
-                       profile.companyName ? profile.companyName.charAt(0).toUpperCase() : 'U'}
-                    </span>
+              {collapsed ? (
+                // Collapsed state - show only avatar with tooltip
+                <div 
+                  className="flex justify-center"
+                  title={profile.name || profile.companyName || 'User'}
+                >
+                  <div className="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-blue-100 hover:ring-blue-200 transition-all duration-200 cursor-pointer">
+                    {profile.avatar ? (
+                      <img 
+                        src={profile.avatar} 
+                        alt={profile.companyName || 'User Avatar'}
+                        className="object-cover w-full h-full"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div 
+                      className={`w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ${profile.avatar ? 'hidden' : 'flex'}`}
+                    >
+                      <span className="text-white font-semibold text-lg">
+                        {profile.name ? profile.name.charAt(0).toUpperCase() : 
+                         profile.companyName ? profile.companyName.charAt(0).toUpperCase() : 'U'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-gray-900 truncate">
-                    {profile.name || profile.companyName || 'User'}
+              ) : (
+                // Expanded state - show full profile card
+                <div className="flex items-center px-4 py-3 bg-white/60 rounded-xl border border-gray-200/50 shadow-sm hover:bg-white/80 transition-all duration-200">
+                  <div className="w-10 h-10 rounded-xl overflow-hidden mr-3 ring-2 ring-blue-100">
+                    {profile.avatar ? (
+                      <img 
+                        src={profile.avatar} 
+                        alt={profile.companyName || 'User Avatar'}
+                        className="object-cover w-full h-full"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div 
+                      className={`w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ${profile.avatar ? 'hidden' : 'flex'}`}
+                    >
+                      <span className="text-white font-semibold text-lg">
+                        {profile.name ? profile.name.charAt(0).toUpperCase() : 
+                         profile.companyName ? profile.companyName.charAt(0).toUpperCase() : 'U'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500">Employer</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-gray-900 truncate">
+                      {profile.name || profile.companyName || 'User'}
+                    </div>
+                    <div className="text-xs text-gray-500">Employer</div>
+                  </div>
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                 </div>
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              </div>
+              )}
             </div>
           )}
         </div>
