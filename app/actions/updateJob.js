@@ -62,6 +62,7 @@ async function updateJob(previousState, formData) {
                 seniorityLevel: formData.get('seniorityLevel'), // String
                 industry: industry, // String - ensure it's not empty
                 responsibilities: formData.getAll('responsibilities'), // Array of strings
+                qualities: formData.getAll('qualities'), // Array of strings
                 expiryDate: expiryDate // FIXED: Always include this field, null clears it
             }
         );

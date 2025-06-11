@@ -58,11 +58,13 @@ const EditJob = () => {
         suggestedCertifications: [],
         industry: industries[0],
         responsibilities: [],
+        qualities: [],
         expiryDate: "", // FIXED: Initialize as empty string instead of undefined
     });
 
     const [selectedPath, setSelectedPath] = useState('');
     const [responsibilitiesInput, setResponsibilitiesInput] = useState('');
+    const [qualitiesInput, setQualitiesInput] = useState('');
     const [skillInput, setSkillInput] = useState('');
     const [degreesInput, setDegreesInput] = useState('');
     const [certificationsInput, setCertificationsInput] = useState('');
@@ -93,6 +95,7 @@ const EditJob = () => {
                     suggestedCertifications: job.suggestedCertifications || [],
                     industry: job.industry || industries[0],
                     responsibilities: job.responsibilities || [],
+                    qualities: job.qualities || [],
                     expiryDate: formatDateForInput(job.expiryDate), // FIXED: Properly format date for input
                 });
                 setLoading(false);
@@ -475,6 +478,13 @@ const EditJob = () => {
                                             setInput: setResponsibilitiesInput,
                                             placeholder: 'e.g. Lead development of new features',
                                             label: 'Responsibilities'
+                                        },
+                                        {
+                                            field: 'qualities',
+                                            input: qualitiesInput,
+                                            setInput: setQualitiesInput,
+                                            placeholder: 'e.g. Strong problem-solving skills',
+                                            label: 'Qualities'
                                         },
                                         {
                                             field: 'skills',
