@@ -49,7 +49,7 @@ export default function Career4MeEmployerLanding() {
     {
       icon: Zap,
       title: "Smart Job Distribution", 
-      description: "AI-powered matching automatically connects your jobs to relevant candidates",
+      description: "Intelligent job matching automatically connects your jobs to relevant candidates",
       benefit: "50% faster hiring"
     },
     {
@@ -73,8 +73,8 @@ export default function Career4MeEmployerLanding() {
       icon: "📝"
     },
     {
-      title: "AI Matching",
-      description: "Our platform intelligently distributes to relevant candidates",
+      title: "Intelligent Matching",
+      description: "Our platform smartly distributes to relevant candidates",
       icon: "🤖"
     },
     {

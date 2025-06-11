@@ -10,8 +10,13 @@ import Image from 'next/image';
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const [profile, setProfile] = useState(null);
+  const [isClient, setIsClient] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -43,6 +48,35 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     { name: "Profile", href: "/profile", icon: <User className="h-5 w-5" /> },
     { name: "Settings", href: "/settings", icon: <Settings className="h-5 w-5" /> },
   ];
+
+  // Don't render until client-side to avoid hydration mismatch
+  if (!isClient) {
+    return (
+      <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 z-50 md:w-64">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-blue-50/30"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100/20 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-100/20 rounded-full blur-2xl"></div>
+        <div className="relative z-10 flex flex-col h-full border-r border-gray-200 bg-white/80 backdrop-blur-sm">
+          <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200/50">
+            <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br shadow-lg">
+                <Image 
+                  src="/icons/C4Me.png" 
+                  alt="Career4Me Logo"
+                  width={24}
+                  height={24}
+                  className="object-contain"
+                />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r text-[#5badec] bg-clip-text">
+                Career4Me
+              </span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    );
+  }
 
   return (
     <aside 
@@ -78,17 +112,21 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
               />
             </div>
             {!collapsed && (
-              <span className="text-xl font-bold bg-gradient-to-r text-[#5badec]  bg-clip-text">
+              <span className="text-xl font-bold bg-gradient-to-r text-[#5badec] bg-clip-text">
                 Career4Me
               </span>
             )}
           </div>
-          <div className="p-2 rounded-lg hover:bg-white/60 transition-colors">
-            {collapsed ? 
-              <ChevronRight className="h-4 w-4 text-gray-500" /> : 
+          {!collapsed && (
+            <div className="p-2 rounded-lg hover:bg-white/60 transition-colors">
               <ChevronLeft className="h-4 w-4 text-gray-500" />
-            }
-          </div>
+            </div>
+          )}
+          {collapsed && (
+            <div className="absolute right-2 p-2 rounded-lg hover:bg-white/60 transition-colors">
+              <ChevronRight className="h-4 w-4 text-gray-500" />
+            </div>
+          )}
         </div>
 
         {/* Navigation */}

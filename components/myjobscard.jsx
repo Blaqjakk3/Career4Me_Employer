@@ -23,9 +23,9 @@ const MyJobsCard = ({ job }) => {
   const getSeniorityColor = (level) => {
     // Use opacity variations of the main color for hierarchy
     switch (level) {
-      case 'Junior': return 'bg-[#5badec]/20 text-[#5badec] border-[#5badec]/30';
+      case 'Entry-Level': return 'bg-[#5badec]/20 text-[#5badec] border-[#5badec]/30';
       case 'Mid-Level': return 'bg-[#5badec]/30 text-[#5badec] border-[#5badec]/40';
-      case 'Senior': return 'bg-[#5badec]/40 text-[#5badec] border-[#5badec]/50';
+      case 'Senior-Level': return 'bg-[#5badec]/40 text-[#5badec] border-[#5badec]/50';
       case 'Lead': return 'bg-[#5badec]/50 text-white border-[#5badec]/60';
       case 'Manager': return 'bg-[#5badec]/60 text-white border-[#5badec]/70';
       case 'Director': return 'bg-[#5badec]/70 text-white border-[#5badec]/80';
@@ -163,6 +163,13 @@ const MyJobsCard = ({ job }) => {
       <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
         <div className="flex justify-end items-center">
           <div className="flex space-x-3">
+            <Link
+              href={`/jobs/details?job=${btoa(job.$id || job.id)}`}
+              className="flex items-center px-4 py-2 text-sm font-medium text-[#5badec] bg-white border border-[#5badec] rounded-lg hover:bg-[#5badec] hover:text-white transition-colors duration-200"
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              View Details
+            </Link>
             <Link
               href={`/jobs/edit?job=${btoa(job.$id || job.id)}`}
               className="flex items-center px-4 py-2 text-sm font-medium text-white bg-[#5badec] rounded-lg hover:bg-[#4a9ad4] transition-colors duration-200"
