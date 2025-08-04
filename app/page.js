@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, BarChart3, Target, Users, Zap, CheckCircle, TrendingUp, Eye, UserCheck, Clock, Star, ChevronRight, Play } from 'lucide-react';
+import { ArrowRight, BarChart3, Target, Users, Zap, CheckCircle, TrendingUp, Eye, UserCheck, Clock, Star, ChevronRight, Play, X, MapPin, Briefcase, GraduationCap, TrendingUp as Growth } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -9,33 +9,131 @@ export default function Career4MeEmployerLanding() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [selectedStage, setSelectedStage] = useState(null);
 
   useEffect(() => {
     setIsVisible(true);
-    const interval = setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % 3);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    
+    // Only run the interval if no popup is open
+    if (!selectedStage) {
+      const interval = setInterval(() => {
+        setActiveStep((prev) => (prev + 1) % 3);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [selectedStage]); // Add selectedStage as dependency
 
   const careerStages = [
     {
       name: "Pathfinder",
       description: "Early-career professionals seeking direction",
       icon: "🧭",
-      color: "from-emerald-400 to-teal-500"
+      color: "from-emerald-400 to-teal-500",
+      detailedInfo: {
+        overview: "Pathfinders are early-career professionals (0-3 years experience) who are eager to learn, adapt, and find their professional direction. They bring fresh perspectives, enthusiasm, and a willingness to grow.",
+        characteristics: [
+          "Recent graduates or entry-level professionals",
+          "High motivation and eagerness to learn",
+          "Looking for mentorship and career guidance",
+          "Flexible and adaptable to new challenges",
+          "Strong foundational skills with room to specialize"
+        ],
+        idealRoles: [
+          "Junior Developer/Analyst positions",
+          "Associate roles across various departments",
+          "Trainee programs and rotational positions",
+          "Entry-level sales and marketing roles",
+          "Research assistant positions"
+        ],
+        benefits: [
+          "Cost-effective hiring with high growth potential",
+          "Fresh ideas and innovative thinking",
+          "Strong digital native skills",
+          "Long-term loyalty when properly developed",
+          "Enthusiasm for company culture adoption"
+        ],
+        hiringTips: [
+          "Focus on potential rather than extensive experience",
+          "Emphasize learning opportunities in job descriptions",
+          "Highlight mentorship and career development programs",
+          "Look for academic achievements and personal projects",
+          "Consider cultural fit and growth mindset"
+        ]
+      }
     },
     {
       name: "Trailblazer", 
       description: "Mid-career experts ready to learn and grow",
       icon: "🚀",
-      color: "from-purple-400 to-pink-500"
+      color: "from-purple-400 to-pink-500",
+      detailedInfo: {
+        overview: "Trailblazers are mid-career professionals (4-10 years experience) who have established expertise but are ready to take on new challenges, lead initiatives, and drive innovation within organizations.",
+        characteristics: [
+          "Proven track record in their field",
+          "Strong technical and leadership skills",
+          "Ready to take on more responsibility",
+          "Excellent problem-solving abilities",
+          "Balance of experience and growth mindset"
+        ],
+        idealRoles: [
+          "Senior developer and technical lead positions",
+          "Project managers and team leads",
+          "Subject matter expert roles",
+          "Business development managers",
+          "Operations and strategy roles"
+        ],
+        benefits: [
+          "Immediate impact with proven skills",
+          "Leadership potential and mentoring abilities",
+          "Industry knowledge and best practices",
+          "Network of professional connections",
+          "Balance of stability and innovation"
+        ],
+        hiringTips: [
+          "Highlight advancement opportunities and challenging projects",
+          "Emphasize leadership development programs",
+          "Show clear career progression paths",
+          "Focus on impact and meaningful work",
+          "Offer competitive compensation and benefits"
+        ]
+      }
     },
     {
       name: "Horizon Changer",
       description: "Professionals ready to enter new fields or roles",
       icon: "🌅",
-      color: "from-orange-400 to-red-500"
+      color: "from-orange-400 to-red-500",
+      detailedInfo: {
+        overview: "Horizon Changers are experienced professionals seeking new directions, whether switching industries, functions, or taking on transformational roles. They bring diverse perspectives and transferable skills.",
+        characteristics: [
+          "Extensive experience in previous roles/industries",
+          "Strong transferable skills and adaptability",
+          "Motivated by new challenges and growth",
+          "Mature decision-making and strategic thinking",
+          "Diverse professional network and perspectives"
+        ],
+        idealRoles: [
+          "Career transition and cross-functional roles",
+          "Consultant and advisory positions",
+          "Change management and transformation roles",
+          "Executive and C-suite positions",
+          "Entrepreneurial and startup opportunities"
+        ],
+        benefits: [
+          "Rich experience from multiple industries/functions",
+          "Proven ability to adapt and learn quickly",
+          "Strategic thinking and mature judgment",
+          "Extensive professional networks",
+          "Fresh perspectives on industry challenges"
+        ],
+        hiringTips: [
+          "Focus on transferable skills and adaptability",
+          "Highlight the opportunity for meaningful change",
+          "Emphasize the value of diverse experience",
+          "Show openness to non-traditional backgrounds",
+          "Offer flexible onboarding and integration support"
+        ]
+      }
     }
   ];
 
@@ -83,6 +181,139 @@ export default function Career4MeEmployerLanding() {
       icon: "📊"
     }
   ];
+
+  const CareerStagePopup = ({ stage, onClose }) => {
+    if (!stage) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative animate-in fade-in duration-300">
+          {/* Header */}
+          <div className={`bg-gradient-to-r ${stage.color} p-8 text-white relative overflow-hidden`}>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            
+            <button 
+              onClick={onClose}
+              className="absolute top-6 right-6 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors duration-200"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="text-6xl">{stage.icon}</div>
+              <div>
+                <h2 className="text-4xl font-bold">{stage.name}</h2>
+                <p className="text-xl opacity-90">{stage.description}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-8 space-y-8">
+            {/* Overview */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <Eye className="w-6 h-6 mr-3 text-blue-500" />
+                Overview
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-lg">{stage.detailedInfo.overview}</p>
+            </div>
+
+            {/* Characteristics */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <Users className="w-6 h-6 mr-3 text-green-500" />
+                Key Characteristics
+              </h3>
+              <div className="grid md:grid-cols-2 gap-3">
+                {stage.detailedInfo.characteristics.map((char, index) => (
+                  <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">{char}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ideal Roles */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <Briefcase className="w-6 h-6 mr-3 text-purple-500" />
+                Ideal Roles
+              </h3>
+              <div className="grid md:grid-cols-2 gap-3">
+                {stage.detailedInfo.idealRoles.map((role, index) => (
+                  <div key={index} className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
+                    <MapPin className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                    <span className="text-gray-700">{role}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Benefits */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <Growth className="w-6 h-6 mr-3 text-orange-500" />
+                Benefits of Hiring
+              </h3>
+              <div className="grid md:grid-cols-2 gap-3">
+                {stage.detailedInfo.benefits.map((benefit, index) => (
+                  <div key={index} className="flex items-start space-x-3 p-3 bg-orange-50 rounded-lg">
+                    <Star className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Hiring Tips */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <GraduationCap className="w-6 h-6 mr-3 text-blue-500" />
+                Hiring Tips
+              </h3>
+              <div className="space-y-3">
+                {stage.detailedInfo.hiringTips.map((tip, index) => (
+                  <div key={index} className="flex items-start space-x-3 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      {index + 1}
+                    </div>
+                    <span className="text-gray-700">{tip}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="bg-gradient-to-r from-[#5badec]/10 to-purple-500/10 rounded-2xl p-6 text-center">
+              <h4 className="text-xl font-bold text-gray-800 mb-3">Ready to Target {stage.name}s?</h4>
+              <p className="text-gray-600 mb-4">Start posting jobs specifically designed for {stage.name} candidates</p>
+              <Link href="/signup">
+                <button className="px-6 py-3 bg-gradient-to-r from-[#5badec] to-[#4a9ad4] text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+                  Post a Job for {stage.name}s
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Prevent background scroll when popup is open
+  useEffect(() => {
+    if (selectedStage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedStage]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -153,13 +384,18 @@ export default function Career4MeEmployerLanding() {
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {careerStages.map((stage, index) => (
               <div key={stage.name} 
-                   className={`group p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-                   style={{ transitionDelay: `${index * 200}ms` }}>
+                   className={`group p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 cursor-pointer ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                   style={{ transitionDelay: `${index * 200}ms` }}
+                   onClick={() => setSelectedStage(stage)}>
                 <div className={`w-16 h-16 bg-gradient-to-br ${stage.color} rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   {stage.icon}
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-3">{stage.name}</h3>
-                <p className="text-gray-600 leading-relaxed">{stage.description}</p>
+                <p className="text-gray-600 leading-relaxed mb-4">{stage.description}</p>
+                <div className="flex items-center text-[#5badec] font-medium group-hover:translate-x-1 transition-transform duration-300">
+                  <span>Learn More</span>
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </div>
               </div>
             ))}
           </div>
@@ -229,33 +465,6 @@ export default function Career4MeEmployerLanding() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-24 bg-gradient-to-b from-gray-900 to-black text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#5badec]/10 to-purple-500/10"></div>
-        <div className="max-w-7xl mx-auto px-6 relative">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-6">Trusted by Industry Leaders</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Join thousands of companies that have transformed their hiring process with Career4Me.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              { number: "50k+", label: "Active Employers" },
-              { number: "2M+", label: "Quality Candidates" },
-              { number: "85%", label: "Faster Hiring" },
-              { number: "4.9★", label: "Customer Rating" }
-            ].map((stat, index) => (
-              <div key={stat.label} className="text-center p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-                <div className="text-4xl font-bold text-[#5badec] mb-2">{stat.number}</div>
-                <div className="text-gray-300">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-r from-[#5badec] to-[#4a9ad4] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20"></div>
@@ -310,6 +519,14 @@ export default function Career4MeEmployerLanding() {
           </div>
         </div>
       </footer>
+
+      {/* Career Stage Popup */}
+      {selectedStage && (
+        <CareerStagePopup 
+          stage={selectedStage} 
+          onClose={() => setSelectedStage(null)} 
+        />
+      )}
     </div>
   );
 }

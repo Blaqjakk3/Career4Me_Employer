@@ -42,14 +42,14 @@ const SignUp = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
+                Employer Name
               </label>
               <input
                 type="text"
                 id="name"
                 name="name"
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5badec] focus:border-[#5badec] outline-none transition"
-                placeholder="John Doe"
+                placeholder="Anonymous Company Ltd"
                 required
               />
             </div>
