@@ -1,6 +1,6 @@
 'use server';
 import { createAdminClient } from "../../config/appwrite";
-import { ID } from "node-appwrite"; // Remove Databases import
+import { ID } from "node-appwrite"; 
 
 async function createEmployer(previousState, formData) {
     const name = formData.get('name');
