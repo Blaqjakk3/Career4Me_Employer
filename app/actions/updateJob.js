@@ -29,7 +29,7 @@ async function updateJob(previousState, formData) {
         // FIXED: Handle expiry date properly - always process the field
         const expiryDateValue = formData.get('expiryDate');
         let expiryDate = null;
-        
+
         // If expiry date is provided and not empty, convert to ISO string
         if (expiryDateValue && expiryDateValue.trim() !== '') {
             try {
@@ -43,6 +43,17 @@ async function updateJob(previousState, formData) {
         // If expiryDateValue is empty or null, expiryDate remains null
         // This allows clearing the expiry date
 
+        // Handle Quick Apply feature
+        const allowCareer4MeApplications = formData.get('allowCareer4MeApplications') === 'on';
+        const applylink = formData.get('applylink');
+
+        // Validate application link requirement
+        if (!allowCareer4MeApplications && !applylink) {
+            return {
+                error: 'Application link is required when Quick Apply is not enabled'
+            }
+        }
+
         // Update job
         const updatedJob = await databases.updateDocument(
             process.env.NEXT_PUBLIC_APPWRITE_DATABASE,
@@ -53,7 +64,7 @@ async function updateJob(previousState, formData) {
                 description: formData.get('description'),
                 relatedpaths: formData.getAll('relatedpaths'), // Array of strings
                 location: formData.get('location'), // String
-                applylink: formData.get('applylink'), // URL
+                applylink: applylink || "", // URL - can be empty if Quick Apply is enabled
                 jobtype: formData.get('jobtype'), // String
                 workenvironment: formData.get('workenvironment'), // String
                 skills: formData.getAll('skills'), // Array of strings
@@ -63,7 +74,8 @@ async function updateJob(previousState, formData) {
                 industry: industry, // String - ensure it's not empty
                 responsibilities: formData.getAll('responsibilities'), // Array of strings
                 qualities: formData.getAll('qualities'), // Array of strings
-                expiryDate: expiryDate // FIXED: Always include this field, null clears it
+                expiryDate: expiryDate, // FIXED: Always include this field, null clears it
+                allowCareer4MeApplications: allowCareer4MeApplications // Quick Apply feature
             }
         );
 

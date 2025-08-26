@@ -32,6 +32,17 @@ async function createJob(previousState, formData){
             }
         }
 
+        // Handle Quick Apply feature
+        const allowCareer4MeApplications = formData.get('allowCareer4MeApplications') === 'on';
+        const applylink = formData.get('applylink');
+
+        // Validate application link requirement
+        if (!allowCareer4MeApplications && !applylink) {
+            return {
+                error: 'Application link is required when Quick Apply is not enabled'
+            }
+        }
+
         // Create job
        const newJob = await databases.createDocument(
         process.env.NEXT_PUBLIC_APPWRITE_DATABASE,
@@ -43,7 +54,7 @@ async function createJob(previousState, formData){
             description: formData.get('description'),
             relatedpaths: formData.getAll('relatedpaths'), // Array of strings
             location: formData.get('location'), // String
-            applylink: formData.get('applylink'), // URL
+            applylink: applylink || "", // URL - can be empty if Quick Apply is enabled
             jobtype: formData.get('jobtype'), // String
             workenvironment: formData.get('workenvironment'), // String
             skills: formData.getAll('skills'), // Array of strings
@@ -54,9 +65,10 @@ async function createJob(previousState, formData){
             responsibilities: formData.getAll('responsibilities'), // Array of strings
             qualities: formData.getAll('qualities'), // Array of strings
             dateofUpload: new Date().toISOString(), // Automatically added date
-            expiryDate: expiryDate // Optional expiry date
+            expiryDate: expiryDate, // Optional expiry date
+            allowCareer4MeApplications: allowCareer4MeApplications // Quick Apply feature
         }
-       ); 
+       );
        revalidatePath('/', 'layout');
 
        return{

@@ -36,6 +36,7 @@ const PostJobs = () => {
         responsibilities: [],
         qualities: [],
         expiryDate: "",
+        allowCareer4MeApplications: false,
     });
 
     const [selectedPath, setSelectedPath] = useState('');
@@ -178,6 +179,44 @@ const PostJobs = () => {
                                     Basic Information
                                 </h3>
 
+                                {/* Quick Apply Toggle */}
+                                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-xl p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center space-x-3">
+                                            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                                <Zap className="w-5 h-5 text-orange-600" />
+                                            </div>
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-gray-900">Enable Quick Apply</h4>
+                                                <p className="text-sm text-gray-600">Allow talents to apply directly through Career4Me with CV and cover letter upload</p>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                name="allowCareer4MeApplications"
+                                                checked={formData.allowCareer4MeApplications}
+                                                onChange={(e) => setFormData({...formData, allowCareer4MeApplications: e.target.checked})}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+                                        </label>
+                                    </div>
+                                    {formData.allowCareer4MeApplications && (
+                                        <div className="mt-4 p-4 bg-white rounded-lg border border-orange-200">
+                                            <div className="flex items-start space-x-2">
+                                                <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                                                    <span className="text-xs text-green-600">✓</span>
+                                                </div>
+                                                <div className="text-sm text-gray-700">
+                                                    <p className="font-medium text-green-700 mb-1">Quick Apply is enabled!</p>
+                                                    <p>Talents will see a "Quick Apply" button and can submit applications with CV compatibility analysis. The external application link becomes optional when this is enabled.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className="grid gap-6">
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-gray-700">Job Title *</label>
@@ -219,7 +258,12 @@ const PostJobs = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="block text-sm font-medium text-gray-700">Application Link *</label>
+                                            <label className="block text-sm font-medium text-gray-700">
+                                                Application Link {!formData.allowCareer4MeApplications && '*'}
+                                                {formData.allowCareer4MeApplications && (
+                                                    <span className="text-sm text-gray-500 font-normal ml-1">(Optional when Quick Apply is enabled)</span>
+                                                )}
+                                            </label>
                                             <input
                                                 type="url"
                                                 name="applylink"
@@ -227,8 +271,13 @@ const PostJobs = () => {
                                                 value={formData.applylink}
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                                required
+                                                required={!formData.allowCareer4MeApplications}
                                             />
+                                            {formData.allowCareer4MeApplications && (
+                                                <p className="text-sm text-gray-500">
+                                                    You can still provide an external application link if you want to give talents multiple application options.
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

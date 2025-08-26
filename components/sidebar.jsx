@@ -7,8 +7,9 @@ import destroySession from '../app/actions/destroySession';
 import getMyProfile from '../app/actions/getMyProfile';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
+import NotificationButton from './NotificationButton';
 
-const Sidebar = ({ collapsed, setCollapsed }) => {
+const Sidebar = ({ collapsed, setCollapsed, onNotificationClick }) => {
   const [profile, setProfile] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const pathname = usePathname();
@@ -164,6 +165,14 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
               </Link>
             ))}
           </nav>
+
+          {/* Notification Button */}
+          <div className={`px-3 pb-4 ${collapsed ? "flex justify-center" : ""}`}>
+            <NotificationButton
+              onClick={onNotificationClick}
+              collapsed={collapsed}
+            />
+          </div>
 
           {/* User Profile Badge - Always show if profile exists */}
           {profile && (
