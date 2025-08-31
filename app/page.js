@@ -323,7 +323,7 @@ export default function Career4MeEmployerLanding() {
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br  rounded-xl flex items-center justify-center shadow-lg">
                <Image 
-                src="/icons/C4Me.png" 
+                src="/icons/logo.png" 
                 alt="Career4Me Logo"
                 width={24}
                 height={24}
@@ -499,7 +499,7 @@ export default function Career4MeEmployerLanding() {
             <div className="flex items-center space-x-3 mb-6 md:mb-0">
               <div className="w-10 h-10 bg-gradient-to-br  rounded-xl flex items-center justify-center">
                  <Image 
-                src="/icons/C4Me.png" 
+                src="/icons/logo.png" 
                 alt="Career4Me Logo"
                 width={24}
                 height={24}

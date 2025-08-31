@@ -62,7 +62,7 @@ const Sidebar = ({ collapsed, setCollapsed, onNotificationClick }) => {
             <div className="flex items-center space-x-3">
               <div className="h-10 w-10 flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br shadow-lg">
                 <Image 
-                  src="/icons/C4Me.png" 
+                  src="/icons/logo.png" 
                   alt="Career4Me Logo"
                   width={24}
                   height={24}
@@ -105,7 +105,7 @@ const Sidebar = ({ collapsed, setCollapsed, onNotificationClick }) => {
           <div className="flex items-center space-x-3">
             <div className="h-10 w-10 flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br shadow-lg">
               <Image 
-                src="/icons/C4Me.png" 
+                src="/icons/logo.png" 
                 alt="Career4Me Logo"
                 width={24}
                 height={24}
