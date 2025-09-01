@@ -6,6 +6,7 @@ import createJob from "../../actions/createJob";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { PlusIcon, ArrowLeft, Briefcase, Sparkles, Target, Zap, Calendar } from 'lucide-react';
+import { isValidExpiryDate, formatTimeRemaining } from '../../../lib/util';
 
 const jobTypes = ["Full Time", "Part Time", "Contract", "Internship"];
 const industries = ["Technology", "Business", "Healthcare", "Finance", "Creative Arts",
@@ -45,9 +46,16 @@ const PostJobs = () => {
     const [skillInput, setSkillInput] = useState('');
     const [degreesInput, setDegreesInput] = useState('');
     const [certificationsInput, setCertificationsInput] = useState('');
+    const [expiryDateError, setExpiryDateError] = useState('');
+    const [timeRemainingMessage, setTimeRemainingMessage] = useState('');
 
     // Get today's date in YYYY-MM-DD format for min date
     const today = new Date().toISOString().split('T')[0];
+
+    // Calculate max date (2 months from today) in YYYY-MM-DD format
+    const twoMonthsLater = new Date();
+    twoMonthsLater.setMonth(twoMonthsLater.getMonth() + 2);
+    const maxDate = twoMonthsLater.toISOString().split('T')[0];
 
     useEffect(() => {
         if (state.error) toast.error(state.error);
@@ -58,7 +66,39 @@ const PostJobs = () => {
     }, [state, router]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+        if (name === 'expiryDate') {
+            if (value) {
+                if (!isValidExpiryDate(value)) {
+                    const selected = new Date(value);
+                    const current = new Date();
+                    const twoMonths = new Date();
+                    twoMonths.setMonth(twoMonths.getMonth() + 2);
+                    twoMonths.setHours(0,0,0,0);
+                    current.setHours(0,0,0,0);
+
+                    if (selected <= current) {
+                        setExpiryDateError('Expiry date must be after today.');
+                    } else if (selected > twoMonths) {
+                        setExpiryDateError('Expiry date cannot be more than 2 months from today.');
+                    } else {
+                        setExpiryDateError('Invalid expiry date.');
+                    }
+                    setTimeRemainingMessage('');
+                } else {
+                    setExpiryDateError('');
+                    setTimeRemainingMessage(`This job will be live for ${formatTimeRemaining(value)}.`);
+                }
+            } else {
+                setExpiryDateError('');
+                setTimeRemainingMessage('');
+            }
+        }
     };
 
     const handleAddPath = () => {
@@ -293,8 +333,11 @@ const PostJobs = () => {
                                         value={formData.expiryDate}
                                         onChange={handleChange}
                                         min={today}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-al"
+                                        max={maxDate}
+                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${expiryDateError ? 'border-red-500' : 'border-gray-300'}`}
                                     />
+                                    {expiryDateError && <p className="text-red-500 text-sm mt-1">{expiryDateError}</p>}
+                                    {timeRemainingMessage && <p className="text-green-600 text-sm mt-1">{timeRemainingMessage}</p>}
                                     <p className="text-sm text-gray-500">
                                         If set, this job will automatically be removed after the specified date.
                                     </p>
@@ -599,7 +642,8 @@ const PostJobs = () => {
                             <div className="pt-8 border-t border-gray-200">
                                 <button
                                     type="submit"
-                                    className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 text-lg"
+                                    disabled={!!expiryDateError}
+                                    className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     🚀 Publish Job & Start Hiring
                                 </button>

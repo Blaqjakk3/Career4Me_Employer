@@ -4,10 +4,13 @@ import Link from "next/link";
 import { Plus, Briefcase, TrendingUp, Target } from "lucide-react";
 import getMyJobs from '../actions/getmyjobs';
 import MyJobsCard from '../../components/myjobscard';
+import { isJobExpired } from '../../lib/util';
 
 
-const Jobs = async () => {
+export default async function MyJobsPage() {
   const jobs = await getMyJobs();  
+
+  const activeJobs = jobs.filter(job => !isJobExpired(job.expiryDate));
   return (   
           <JobsLayout>
             <div className="min-h-screen bg-white">
@@ -38,25 +41,20 @@ const Jobs = async () => {
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-4 mt-8">
-                <div className="flex items-center px-6 py-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                    <Target className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900">{jobs.length}</div>
-                    <div className="text-sm text-gray-500">Active Jobs</div>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center justify-center border border-gray-200">
+                    <p className="text-sm font-medium text-gray-500 mb-1">Active Job Postings</p>
+                    <div className="text-2xl font-bold text-gray-900">{activeJobs.length}</div>
                 </div>
-                
-                <div className="flex items-center px-6 py-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                    <TrendingUp className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900">{jobs.reduce((sum, job) => sum + (job.numViews || 0), 0)}</div>
-                    <div className="text-sm text-gray-500">Total Views</div>
-                  </div>
+
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center justify-center border border-gray-200">
+                    <p className="text-sm font-medium text-gray-500 mb-1">Total Views</p>
+                    <div className="text-2xl font-bold text-gray-900">{activeJobs.reduce((sum, job) => sum + (job.numViews || 0), 0)}</div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center justify-center border border-gray-200">
+                    <p className="text-sm font-medium text-gray-500 mb-1">Total Clicks</p>
+                    <div className="text-2xl font-bold text-blue-900">{activeJobs.reduce((sum, job) => sum + (job.numClicks || 0), 0)}</div>
                 </div>
               </div>
         </div>
@@ -73,15 +71,15 @@ const Jobs = async () => {
       <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">Your Listings</h2>
                   <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                    {jobs.length} {jobs.length === 1 ? 'job' : 'jobs'} posted
+                    {activeJobs.length} {activeJobs.length === 1 ? 'job' : 'jobs'} posted
                   </div>
                 </div>
       
       <div className="space-y-4">
-        {jobs.length > 0 ? (
-          jobs.map((job) => <MyJobsCard key={job.$id} job={job}/>)
+        {activeJobs.length > 0 ? (
+          activeJobs.map((job) => <MyJobsCard key={job.$id} job={job}/>)
         ) : (
-          <p className="text-gray-500 text-center py-8">You have no job listings</p>
+          <p className="text-gray-500 text-center py-8">You have no active job listings</p>
         )}
       </div>
       </div>
@@ -90,5 +88,3 @@ const Jobs = async () => {
 
      )
 }
- 
-export default Jobs;

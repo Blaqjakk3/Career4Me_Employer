@@ -160,7 +160,7 @@ const ApplicationDetailModal = ({ application, isOpen, onClose, onStatusUpdate }
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
                                                 <p className="text-sm font-medium text-gray-900">Applied Date</p>
-                                                <p className="text-sm text-gray-600">{formatDate(application.applicationdate)}</p>
+                                                <p className="text-sm text-gray-600">{formatDate(application.applicationDate)}</p>
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium text-gray-900">Status</p>

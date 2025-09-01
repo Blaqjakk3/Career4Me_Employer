@@ -4,6 +4,8 @@
   import { redirect } from "next/navigation";
   import { cookies } from "next/headers";
   import { Query } from "node-appwrite";
+  import { isJobExpired } from '../../lib/util';
+  import deleteJobs from './deleteJob';
 
   async function getMyJobs() {
     const sessionCookie = cookies().get('appwrite-session');
@@ -24,7 +26,16 @@
             [Query.equal('employer', employerId)] 
         );
 
-        return jobs
+        const activeJobs = [];
+        for (const job of jobs) {
+            if (isJobExpired(job.expiryDate)) {
+                await deleteJobs(job.$id);
+            } else {
+                activeJobs.push(job);
+            }
+        }
+
+        return activeJobs;
     } catch (error) {
         console.log('Failed to get your jobs', error);
         redirect('/error');

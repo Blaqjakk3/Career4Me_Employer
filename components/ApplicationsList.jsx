@@ -277,7 +277,7 @@ const ApplicationsList = ({ applications, jobTitle, onStatusUpdate, onViewDetail
                                         </div>
                                         <div className="flex items-center space-x-2">
                                             <Calendar className="w-4 h-4" />
-                                            <span>Applied {formatDate(application.applicationdate)}</span>
+                                            <span>Applied {formatDate(application.applicationDate)}</span>
                                         </div>
                                         {application.talent?.careerStage && (
                                             <div className="flex items-center space-x-2">
